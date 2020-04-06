@@ -5,18 +5,23 @@ import math
 ## Global variables
 filename = sys.argv[1]
 type = sys.argv[2]
-selected = int(sys.argv[3]) + 1
+selected = int(sys.argv[3])
 
-def showKNeighbours(neighbours):
+def showKNeighbours(neighbours, data, individual, k):
+    nb_selected = 0
     for i in range(len(neighbours)):
-        print("Numero " + str(neighbours[i][1] - 1) + " : " + str(neighbours[i][0]))
-
+        selected_value = data[neighbours[i][1]][selected]
+        if (selected_value == individual[0]):
+            nb_selected = nb_selected + 1
+        print("Voisin N° " + str(neighbours[i][1] - 1) + " distance : " + str(neighbours[i][0]) + " classe: " + str(selected_value))
+    print("total : " + str(individual[0]) + ": " + str(nb_selected) + "/" + str(k))
+    
 def findKNN(data, individual, k):
     neighbours = []
     for i in range(k):
         neighbour = find1NN(data, individual)
         neighbours.append((neighbour[0], neighbour[1]))
-        data[neighbour[1]] = []
+        data[neighbour[1]].append('done')
     return neighbours
 
 
@@ -76,7 +81,7 @@ data = getFileData(filename)
 print("Chargement du fichier " + filename)
 showStats(data)
 individual = getList(getUserInput("Entrez un individu à évaluer (valeurs séparées par des ',', comme dans le fichier chargé)"))
-#print("1NN pour cet individu : " + str(find1NN(data, individual)[0]))
+print("1NN pour cet individu : " + str(find1NN(data, individual)[0]))
 k = int(getUserInput("Veuillez choisir K :"))
 neighbours = findKNN(data, individual, k)
-showKNeighbours(neighbours)
+showKNeighbours(neighbours, data, individual, k)
